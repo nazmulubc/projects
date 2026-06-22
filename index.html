@@ -3,147 +3,350 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>From Sensor to Strategy</title>
+    <title>From Sensor to Strategy | Interactive Reflection</title>
     <style>
         :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #34495e;
-            --accent-color: #2980b9;
-            --bg-color: #fafafa;
-            --text-color: #333333;
-            --border-color: #eaeaea;
+            --primary: #2c3e50;
+            --secondary: #34495e;
+            --accent: #2980b9;
+            --bg-light: #ecf0f1;
+            --text-dark: #333;
+            --success: #27ae60;
+            --danger: #e74c3c;
         }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            line-height: 1.8;
-            color: var(--text-color);
-            background-color: var(--bg-color);
+            font-family: 'Segoe UI', system-ui, sans-serif;
             margin: 0;
             padding: 0;
+            background-color: #f8f9fa;
+            color: var(--text-dark);
+            line-height: 1.6;
         }
         header {
-            background-color: var(--primary-color);
+            background-color: var(--primary);
             color: white;
-            padding: 4rem 2rem;
             text-align: center;
+            padding: 3rem 1rem;
         }
         header h1 {
             margin: 0;
-            font-size: 2.5rem;
-            font-weight: 700;
-            max-width: 800px;
-            margin: 0 auto;
-            line-height: 1.3;
+            font-size: 2.2rem;
         }
         header p {
-            margin-top: 1rem;
-            font-size: 1.2rem;
-            opacity: 0.9;
+            margin: 0.5rem 0 0;
+            color: #bdc3c7;
+            font-size: 1.1rem;
         }
-        main {
-            max-width: 800px;
-            margin: -3rem auto 3rem auto;
+        .container {
+            max-width: 900px;
+            margin: -2rem auto 2rem;
             background: white;
-            padding: 3rem 4rem;
             border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
         }
-        h2 {
-            color: var(--primary-color);
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 0.5rem;
-            margin-top: 3rem;
-            font-size: 1.5rem;
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            background: var(--bg-light);
+            border-bottom: 2px solid #ddd;
         }
-        p {
+        .tab-btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            background: none;
+            font-size: 1rem;
+            font-weight: bold;
+            color: var(--secondary);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .tab-btn:hover {
+            background: #e0e6ed;
+        }
+        .tab-btn.active {
+            background: white;
+            color: var(--accent);
+            border-bottom: 3px solid var(--accent);
+        }
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            padding: 2rem;
+            animation: fadeIn 0.4s;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Interactive Widgets CSS */
+        
+        /* Iceberg */
+        .iceberg-container {
+            text-align: center;
+            margin: 2rem 0;
+        }
+        .iceberg-tip {
+            background: #a9cce3;
+            padding: 2rem;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            border: 2px solid #5499c7;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .iceberg-tip:hover { background: #7fb3d5; }
+        .water-line {
+            height: 4px;
+            background: #2980b9;
+            width: 100%;
+            margin: 0 auto;
+        }
+        .iceberg-hidden {
+            background: #1f618d;
+            color: white;
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            border-radius: 0 0 8px 8px;
+            transition: max-height 0.5s ease-out, padding 0.5s ease;
+        }
+        .iceberg-hidden.revealed {
+            max-height: 300px;
+            padding: 2rem;
+        }
+
+        /* Forces of Change Slider */
+        .slider-group {
             margin-bottom: 1.5rem;
-            text-align: justify;
         }
-        .citation {
-            color: var(--accent-color);
-            font-size: 0.85em;
-            vertical-align: super;
-            text-decoration: none;
+        .slider-group label {
+            display: flex;
+            justify-content: space-between;
             font-weight: bold;
         }
-        .references {
-            background-color: #f8f9fa;
-            padding: 2rem;
+        input[type="range"] {
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+        .adoption-meter {
+            height: 30px;
+            background: #eee;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 2rem;
+            position: relative;
+        }
+        .adoption-fill {
+            height: 100%;
+            width: 50%;
+            background: var(--success);
+            transition: width 0.3s, background-color 0.3s;
+        }
+        .adoption-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Technoeconomics Form */
+        .calc-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        .calc-form input {
+            width: 100%;
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .result-box {
+            grid-column: span 2;
+            background: var(--bg-light);
+            padding: 1.5rem;
+            text-align: center;
             border-radius: 8px;
-            margin-top: 3rem;
-            border-left: 4px solid var(--accent-color);
+            margin-top: 1rem;
+            border-left: 5px solid var(--accent);
         }
-        .references h2 {
-            margin-top: 0;
-            border-bottom: none;
-        }
-        .references p {
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-            text-align: left;
-        }
-        @media (max-width: 768px) {
-            main {
-                margin: 0;
-                padding: 2rem;
-                border-radius: 0;
-            }
-            header h1 {
-                font-size: 2rem;
-            }
-        }
+        .result-box h3 { margin: 0; color: var(--primary); }
+        .result-box .huge-num { font-size: 2.5rem; color: var(--danger); font-weight: bold; margin: 0.5rem 0;}
     </style>
 </head>
 <body>
 
     <header>
-        <h1>From Sensor to Strategy: An Engineer's Evolution in Technology Entrepreneurship <span class="citation">[cite: 1]</span></h1>
-        <p>A Reflective Analysis on Product Viability, Adoption Psychology, and Business Strategy</p>
+        <h1>From Sensor to Strategy</h1>
+        <p>By Nazmul Islam | An Engineer's Evolution in Technology Entrepreneurship</p>
     </header>
 
-    <main>
-        <section id="introduction">
-            <p>Entering this course as a Master of Engineering student, my definition of technology entrepreneurship was essentially synonymous with technical invention <span class="citation">[cite: 2]</span>. I operated under the assumption that designing a functionally superior product, specifically, our team's proposed automated toxic gas emission monitor for post-drilling plugged wells, was the entirety of the entrepreneurial challenge <span class="citation">[cite: 3]</span>. I believed that if the engineering was sound, market adoption and financial success would naturally follow <span class="citation">[cite: 4]</span>. However, critically reviewing my weekly reflection videos reveals a profound paradigm shift <span class="citation">[cite: 5]</span>. Throughout the term, my understanding of technology entrepreneurship evolved across three distinct threads: transitioning from solution-centric engineering to problem-centric empathy, recognizing the psychological friction of user adoption, and comprehending the hidden structural mechanics of business viability <span class="citation">[cite: 6]</span>.</p>
-        </section>
+    <div class="container">
+        <div class="tab-nav">
+            <button class="tab-btn active" onclick="openTab('tab1')">1. The Problem Iceberg</button>
+            <button class="tab-btn" onclick="openTab('tab2')">2. Adoption Psychology</button>
+            <button class="tab-btn" onclick="openTab('tab3')">3. Technoeconomics</button>
+        </div>
 
-        <section id="problem-first-empathy">
-            <h2>The Shift from Solution-First to Problem-First Empathy <span class="citation">[cite: 7]</span></h2>
-            <p>My initial reflections expose a classic technical blind spot: an obsession with the "how" rather than the "why" <span class="citation">[cite: 8]</span>. Early in the term, my primary concern was how we were going to physically build our automated sensor <span class="citation">[cite: 9]</span>. However, the introduction of the Iceberg Model and the PlayPump case study forced me to realize that addressing surface-level events without understanding underlying systemic structures inevitably leads to failure <span class="citation">[cite: 10]</span>. This framework resonated deeply with my observations of infrastructure challenges, such as load shedding in Bangladesh, where well-intentioned solutions often collapse because they ignore the complex human and structural context [Personal Video Journal, Jan. 16, 2026] <span class="citation">[cite: 11]</span>.</p>
+        <div id="tab1" class="tab-content active">
+            <h2>The Shift to Problem-First Empathy</h2>
+            <p>Early in the term, the focus was purely on building an automated toxic gas emission monitor. However, analyzing the problem through the <strong>Iceberg Model</strong> revealed that fixing surface-level issues without understanding underlying systemic structures leads to failure.</p>
             
-            <p>This problem-centric mindset was further reinforced by the course's optional podcast, <em>What's Your Problem?</em> [3][4] <span class="citation">[cite: 12]</span>. Listening to various entrepreneurs on the show, I realized that none of them defined their ventures by pitching a perfected piece of hardware <span class="citation">[cite: 13]</span>. Instead, they spent their time deconstructing the specific, intractable barriers they were trying to overcome <span class="citation">[cite: 14]</span>. The entire premise of the podcast, defining a company entirely by the problem it solves, mirrored my own transition <span class="citation">[cite: 15]</span>.</p>
-            
-            <p>This realization was crystallized during our module on problem interviews <span class="citation">[cite: 16]</span>. My natural instinct was to engineer a fix the second I saw a problem, which initially caused me to focus too heavily on the "Solution" box of the Lean Canvas [Personal Video Journal, Jan. 28, 2026; Personal Video Journal, Feb. 27, 2026] <span class="citation">[cite: 17, 18]</span>. The concept of the "ugly baby" (learning to accept customer criticism without defending the product) was a turning point [1] <span class="citation">[cite: 18]</span>. I learned that an entrepreneur must first fall in love with the problem <span class="citation">[cite: 19]</span>. For our project, that meant understanding the true pain of the environmental specialists dealing with faulty manual data and human fatigue, rather than just pitching our automated hardware <span class="citation">[cite: 20]</span>.</p>
-        </section>
+            <div class="iceberg-container">
+                <div class="iceberg-tip" onclick="toggleIceberg()">
+                    Click to Reveal Hidden Structures<br><br>
+                    <strong>Surface Problem:</strong> Building the Physical Automated Sensor
+                </div>
+                <div class="water-line"></div>
+                <div class="iceberg-hidden" id="hidden-iceberg">
+                    <p><strong>Underlying Systemic Context:</strong></p>
+                    <ul style="text-align: left; max-width: 400px; margin: 0 auto;">
+                        <li>Environmental specialists' human fatigue</li>
+                        <li>Faulty manual data entry workflows</li>
+                        <li>Complex human infrastructure environments</li>
+                    </ul>
+                    <p><em>Insight: You must fall in love with the problem, not the product.</em></p>
+                </div>
+            </div>
+        </div>
 
-        <section id="psychology-of-adoption">
-            <h2>The Psychology of Adoption and the Minimum Lovable Product <span class="citation">[cite: 21]</span></h2>
-            <p>As my focus shifted toward the end-user, my understanding of product validation transformed <span class="citation">[cite: 22]</span>. I had originally assumed that because our automated monitor was safer and more efficient, environmental facilities would immediately and eagerly adopt it <span class="citation">[cite: 23, 24]</span>. The "Four Forces of Change" framework shattered this assumption <span class="citation">[cite: 24]</span>. While I was focused entirely on the "Pot of Gold" (the efficiency and safety of our device), I was completely ignoring the "Mermaid" (the comfort of the status quo) and the "Risk of Falling" (employee backlash and the hidden fear of adopting new technology) [Personal Video Journal, Mar. 6, 2026] <span class="citation">[cite: 25]</span>.</p>
+        <div id="tab2" class="tab-content">
+            <h2>The Four Forces of Change</h2>
+            <p>A technologically superior product is useless if it ignores human psychology. Adjust the sliders below to see how the friction of adoption (Habit and Anxiety) competes against the drivers of change (Push and Pull) when introducing a new technology.</p>
             
-            <p>I recognized that a technologically superior product is entirely useless if it ignores human psychology <span class="citation">[cite: 26]</span>. Even if a traditional method is inefficient, the fact that it is known makes it feel safe to the user <span class="citation">[cite: 27]</span>. To combat this friction, I realized we needed to shift our goal from building a Minimum Viable Product (MVP) to designing a Minimum Lovable Product (MLP) [2] <span class="citation">[cite: 28]</span>. Instead of spending capital on a complex physical prototype to prove the sensor worked, we pivoted our strategy to a "Wizard of Oz" test [Personal Video Journal, Mar. 11, 2026] <span class="citation">[cite: 29]</span>. By simulating the automation behind the scenes and focusing instead on presenting a frictionless, gamified software dashboard to the user, we prioritized validating user adoption and delight over raw technical viability <span class="citation">[cite: 30]</span>.</p>
-        </section>
+            <div class="slider-group">
+                <label>Push (Frustration with faulty manual data) <span id="pushVal">50</span></label>
+                <input type="range" id="push" min="0" max="100" value="50" oninput="updateAdoption()">
+            </div>
+            <div class="slider-group">
+                <label>Pull (Desire for safer, efficient automation) <span id="pullVal">50</span></label>
+                <input type="range" id="pull" min="0" max="100" value="50" oninput="updateAdoption()">
+            </div>
+            <hr>
+            <div class="slider-group">
+                <label>Habit (Comfort of the known status quo) <span id="habitVal">50</span></label>
+                <input type="range" id="habit" min="0" max="100" value="50" oninput="updateAdoption()">
+            </div>
+            <div class="slider-group">
+                <label>Anxiety (Fear of new technology/backlash) <span id="anxietyVal">50</span></label>
+                <input type="range" id="anxiety" min="0" max="100" value="50" oninput="updateAdoption()">
+            </div>
 
-        <section id="structural-viability">
-            <h2>Structural Viability - IP and Technoeconomics <span class="citation">[cite: 31]</span></h2>
-            <p>The final thread of my evolution involved recognizing the legal and financial frameworks required to protect and sustain an invention <span class="citation">[cite: 32]</span>. The concept of survivorship bias, which is illustrated by the military's misguided desire to armor the bullet holes on returning WWII bombers, highlighted my own internal biases [Personal Video Journal, Mar. 11, 2026] <span class="citation">[cite: 33]</span>. I was only looking at the technical "bullet holes" I knew how to fix, while ignoring the fatal vulnerabilities in our business model that could actually crash the startup <span class="citation">[cite: 34]</span>.</p>
+            <div class="adoption-meter">
+                <div class="adoption-fill" id="adoptBar"></div>
+                <div class="adoption-text" id="adoptText">Adoption Status: Neutral</div>
+            </div>
+            <p style="margin-top: 1rem; font-size: 0.9em; text-align: center;"><em>Solution: Shift from building an MVP to a Minimum Lovable Product (MLP) via "Wizard of Oz" testing to reduce anxiety.</em></p>
+        </div>
+
+        <div id="tab3" class="tab-content">
+            <h2>Structural Viability Calculator</h2>
+            <p>Survivorship bias often leads engineers to ignore fatal flaws in the business model. Conflating Cost of Goods Sold (COGS) with the True Unit Cost can bankrupt a startup. Calculate the true cost per sensor below.</p>
             
-            <p>The seminar hosted by Innovation UBC on Intellectual Property was a stark wake-up call regarding these vulnerabilities <span class="citation">[cite: 35]</span>. The historical example of Canadian inventor Henry Woodward, who patented an early lightbulb but had to sell it to Thomas Edison due to a lack of commercial funding, proved that technical brilliance without a legal and financial moat is easily exploited [Personal Video Journal, Mar. 5, 2026] <span class="citation">[cite: 36]</span>. I realized I had to be a strategist, not just an engineer <span class="citation">[cite: 37]</span>.</p>
+            <div class="calc-form">
+                <div>
+                    <label>Base COGS per Sensor ($)</label>
+                    <input type="number" id="cogs" value="150" oninput="calcCost()">
+                </div>
+                <div>
+                    <label>Expected Sales Volume (Units)</label>
+                    <input type="number" id="volume" value="500" oninput="calcCost()">
+                </div>
+                <div>
+                    <label>Total CapEx / R&D ($)</label>
+                    <input type="number" id="capex" value="20000" oninput="calcCost()">
+                </div>
+                <div>
+                    <label>Annual OpEx + Founder Salary ($)</label>
+                    <input type="number" id="opex" value="65000" oninput="calcCost()">
+                </div>
+                
+                <div class="result-box">
+                    <h3>True Unit Cost Required to Break Even</h3>
+                    <div class="huge-num" id="trueCost">$320.00</div>
+                    <p style="margin:0; font-size: 0.9em; color: var(--secondary);">Notice how the True Cost is drastically higher than the base COGS.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab Navigation Logic
+        function openTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // Iceberg Interaction
+        function toggleIceberg() {
+            document.getElementById('hidden-iceberg').classList.toggle('revealed');
+        }
+
+        // Forces of Change Logic
+        function updateAdoption() {
+            let push = parseInt(document.getElementById('push').value);
+            let pull = parseInt(document.getElementById('pull').value);
+            let habit = parseInt(document.getElementById('habit').value);
+            let anxiety = parseInt(document.getElementById('anxiety').value);
+
+            document.getElementById('pushVal').innerText = push;
+            document.getElementById('pullVal').innerText = pull;
+            document.getElementById('habitVal').innerText = habit;
+            document.getElementById('anxietyVal').innerText = anxiety;
+
+            let drivingForces = push + pull;
+            let restrainingForces = habit + anxiety;
             
-            <p>This was further reinforced during the technoeconomics lecture with mentors from the UBC Venture Mentoring Service (VMS) <span class="citation">[cite: 38]</span>. Their breakdown of unit economics exposed massive flaws in our initial pricing assumptions <span class="citation">[cite: 39]</span>. I had conflated the Cost of Goods Sold (COGS) with our true unit cost, completely ignoring CapEx, OpEx, and the necessity of factoring in a founder's living salary [Personal Video Journal, Mar. 13, 2026] <span class="citation">[cite: 40]</span>. Without this financial foresight, our technically sound sensor would have bankrupted us immediately <span class="citation">[cite: 41]</span>.</p>
-        </section>
+            // Calculate a ratio (0 to 100%)
+            let total = drivingForces + restrainingForces;
+            let percent = total === 0 ? 50 : (drivingForces / total) * 100;
+            
+            let bar = document.getElementById('adoptBar');
+            let txt = document.getElementById('adoptText');
+            
+            bar.style.width = percent + '%';
+            
+            if(percent > 60) {
+                bar.style.backgroundColor = 'var(--success)';
+                txt.innerText = 'High Likelihood of Adoption';
+            } else if (percent < 40) {
+                bar.style.backgroundColor = 'var(--danger)';
+                txt.innerText = 'Product Will Fail to Scale';
+            } else {
+                bar.style.backgroundColor = '#f1c40f';
+                txt.innerText = 'Adoption is Stalled / Neutral';
+            }
+        }
 
-        <section id="conclusion">
-            <h2>Conclusion <span class="citation">[cite: 42]</span></h2>
-            <p>Ultimately, this course bridged the gap between engineering theory and commercial reality <span class="citation">[cite: 43]</span>. I have learned that technology entrepreneurship is not merely the act of building a physical device <span class="citation">[cite: 44]</span>. It is the rigorous, often uncomfortable process of validating a real human problem, navigating the psychological resistance to change, and structuring a legally defensible and mathematically sound business model <span class="citation">[cite: 45]</span>. Our automated gas monitor is no longer just a collection of sensors and data logs; <span class="citation">[cite: 46]</span> it is the center of a validated, strategic narrative <span class="citation">[cite: 47]</span>. Through this journey, my core strength remains in technical problem-solving, but I now possess the entrepreneurial toolkit required to ensure those solutions can actually survive and scale in the real world <span class="citation">[cite: 48]</span>.</p>
-        </section>
+        // Technoeconomics Calculator
+        function calcCost() {
+            let cogs = parseFloat(document.getElementById('cogs').value) || 0;
+            let volume = parseFloat(document.getElementById('volume').value) || 1;
+            let capex = parseFloat(document.getElementById('capex').value) || 0;
+            let opex = parseFloat(document.getElementById('opex').value) || 0;
 
-        <section class="references" id="references">
-            <h2>References <span class="citation">[cite: 49]</span></h2>
-            <p>[1] S. Blank and B. Dorf, <em>The Startup Owner's Manual: The Step-By-Step Guide for Building a Great Company</em>. Hoboken, NJ: John Wiley & Sons, 2020. <span class="citation">[cite: 50, 51]</span></p>
-            <p>[2] B. De Haaff, <em>Lovability: How to Build a Business That People Love and Be Happy Doing It</em>. Austin, TX: Greenleaf Book Group Press, 2017. <span class="citation">[cite: 52, 53]</span></p>
-            <p>[3] J. Goldstein, "Putting carbon back into the ground," <em>What's Your Problem?</em>, Pushkin Industries, Oct. 24, 2022. [Podcast]. Available: <a href="https://www.pushkin.fm/podcasts/whats-your-problem/putting-carbon-back-into-the-ground" target="_blank">Link</a> <span class="citation">[cite: 54, 55]</span></p>
-            <p>[4] J. Goldstein, "Building a self-driving tractor to change the future of food," <em>What's Your Problem?</em>, Pushkin Industries, Dec. 18, 2025. [Podcast]. Available: <a href="https://www.pushkin.fm/podcasts/whats-your-problem/building-a-self-driving-tractor-to-change-the-future-of-food" target="_blank">Link</a> <span class="citation">[cite: 56, 57]</span></p>
-        </section>
-    </main>
+            let overheadPerUnit = (capex + opex) / volume;
+            let trueCost = cogs + overheadPerUnit;
+
+            document.getElementById('trueCost').innerText = '$' + trueCost.toFixed(2);
+        }
+
+        // Initialize displays
+        updateAdoption();
+        calcCost();
+    </script>
 
 </body>
 </html>
